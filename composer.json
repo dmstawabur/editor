@@ -1,0 +1,12 @@
+{
+    "name": "gplcart/editor",
+    "type": "gplcart-module",
+    "description": "Edit theme template, CSS, JS files rigth in admin area",
+    "keywords": ["gplcart", "ecommerce", "shopping cart", "gplcart module", "php"],
+    "license": "GPL-3.0+",
+    "require": {
+        "gplcart/composer-module-installer": "*"
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}
