@@ -10,7 +10,6 @@
 namespace gplcart\modules\editor\controllers;
 
 use gplcart\core\models\Module as ModuleModel,
-    gplcart\modules\twig\Twig as TwigModule,
     gplcart\modules\editor\models\Editor as EditorModuleModel;
 use gplcart\core\controllers\backend\Controller as BackendController;
 
@@ -33,12 +32,6 @@ class Editor extends BackendController
     protected $module;
 
     /**
-     * Twid module class instance
-     * @var \gplcart\modules\twig\Twig $twig
-     */
-    protected $twig_module;
-
-    /**
      * The current module
      * @var array
      */
@@ -53,16 +46,13 @@ class Editor extends BackendController
     /**
      * @param EditorModuleModel $editor
      * @param ModuleModel $module
-     * @param TwigModule $twig_module
      */
-    public function __construct(EditorModuleModel $editor, ModuleModel $module,
-            TwigModule $twig_module)
+    public function __construct(EditorModuleModel $editor, ModuleModel $module)
     {
         parent::__construct();
 
         $this->editor = $editor;
         $this->module = $module;
-        $this->twig_module = $twig_module;
     }
 
     /**
@@ -315,21 +305,31 @@ class Editor extends BackendController
         $this->setSubmitted('path', $this->data_file);
         $this->setSubmitted('module', $this->data_module);
 
-        // Validate TWIG
-        $info = pathinfo($this->data_file);
-
-        if ($info['extension'] !== 'twig') {
-            return null;
-        }
-
         $content = $this->getSubmitted('content');
 
-        if (empty($content)) {
+        if (!empty($content)) {
+            $this->validateTwigEditor($content);
+        }
+        return !$this->hasErrors();
+    }
+
+    /**
+     * Validates TWIG code
+     * @param string $content
+     * @return boolean
+     */
+    protected function validateTwigEditor($content)
+    {
+        $info = pathinfo($this->data_file);
+
+        if ($info['extension'] !== 'twig' || !$this->config->isEnabledModule('twig')) {
             return null;
         }
 
-        $this->twig_module->initTwig();
-        $twig = $this->twig_module->getTwigInstance($info['dirname'], $this);
+        /* @var $module \gplcart\modules\twig\Twig */
+        $module = $this->config->getModuleInstance('twig');
+        $module->initTwig();
+        $twig = $module->getTwigInstance($info['dirname'], $this);
 
         try {
             $twig->parse($twig->tokenize(new \Twig_Source($content, $info['basename'])));
@@ -337,8 +337,7 @@ class Editor extends BackendController
         } catch (\Twig_Error_Syntax $e) {
             $this->setError('content', $e->getMessage());
         }
-
-        return !$this->hasErrors();
+        return false;
     }
 
     /**
