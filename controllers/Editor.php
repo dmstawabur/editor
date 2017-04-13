@@ -328,8 +328,6 @@ class Editor extends BackendController
 
         /* @var $module \gplcart\modules\twig\Twig */
         $module = $this->config->getModuleInstance('twig');
-
-        $this->library->load('twig');
         $twig = $module->getTwigInstance($info['dirname'], $this);
 
         try {
