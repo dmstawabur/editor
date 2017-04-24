@@ -77,7 +77,7 @@ class Editor extends Model
 
         $has_backup = true;
         if (!$this->hasBackup($data['module'])) {
-            $has_backup = $this->backup($data);
+            $has_backup = $this->backup->backup('module', $data['module']);
         }
 
         if ($has_backup !== true) {
@@ -115,25 +115,6 @@ class Editor extends Model
         $conditions = array('module_id' => $module['id']);
         $existing = $this->backup->getList($conditions);
         return !empty($existing);
-    }
-
-    /**
-     * Creates a module backup
-     * @param array $data
-     * @return boolean|string
-     */
-    protected function backup(array $data)
-    {
-        $vars = array('@name' => $data['module']['name'], '@date' => date("D M j G:i:s"));
-        $name = $this->language->text('Module @name. Automatically backed up on @date', $vars);
-
-        $backup = array(
-            'name' => $name,
-            'module' => $data['module'],
-            'user_id' => $data['user_id']
-        );
-
-        return $this->backup->backup('module', $backup);
     }
 
 }
