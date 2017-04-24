@@ -76,7 +76,6 @@ class Editor extends Model
         }
 
         $has_backup = true;
-
         if (!$this->hasBackup($data['module'])) {
             $has_backup = $this->backup($data);
         }
@@ -134,8 +133,7 @@ class Editor extends Model
             'user_id' => $data['user_id']
         );
 
-        $result = $this->backup->backup('module', $backup);
-        return is_numeric($result);
+        return $this->backup->backup('module', $backup);
     }
 
 }
