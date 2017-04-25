@@ -260,7 +260,7 @@ class Editor extends BackendController
     protected function setMessageEditEditor()
     {
         if ($this->canSaveEditor()) {
-            $message = $this->text('Before saving changes make sure you have a <a href="@url">backup</a> of the current version', array('@url' => $this->url('admin/tool/backup')));
+            $message = $this->text('Before saving changes make sure you have a <a href="@url">backup</a> of the current version', array('@url' => $this->url('admin/report/backup')));
             $this->setMessage($message, 'warning');
         }
 

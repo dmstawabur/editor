@@ -26,22 +26,6 @@ class Editor extends Module
     }
 
     /**
-     * Module info
-     * @return array
-     */
-    public function info()
-    {
-        return array(
-            'name' => 'Theme editor',
-            'version' => '1.0.0-dev',
-            'description' => 'Allows to edit theme template, CSS, JS files rigth in admin area',
-            'author' => 'Iurii Makukh ',
-            'core' => '1.x',
-            'license' => 'GPL-3.0+'
-        );
-    }
-
-    /**
      * Implements hook "route.list"
      * @param array $routes
      */
