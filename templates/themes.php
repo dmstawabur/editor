@@ -12,7 +12,7 @@
     <div class="form-group">
       <div class="col-md-12">
         <?php foreach ($themes as $module_id => $module) { ?>
-          <a class="btn btn-default" href="<?php echo $this->url("admin/tool/editor/$module_id"); ?>"><?php echo $this->escape($module['name']); ?></a>
+          <a class="btn btn-default" href="<?php echo $this->url("admin/tool/editor/$module_id"); ?>"><?php echo $this->e($module['name']); ?></a>
         <?php } ?>
       </div>
     </div>

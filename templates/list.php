@@ -19,15 +19,15 @@
         <?php echo $file['indentation']; ?>
         <?php if($access_content) { ?>
         <a title="<?php echo $file['path']; ?>" href="<?php echo $this->url("admin/tool/editor/{$module['id']}/{$file['id']}"); ?>">
-          <?php echo $this->escape($file['name']); ?>
+          <?php echo $this->e($file['name']); ?>
         </a>
         <?php } else { ?>
-        <?php echo $this->escape($file['name']); ?>
+        <?php echo $this->e($file['name']); ?>
         <?php } ?>
       </li>
       <?php } else { ?>
       <li title="<?php echo $file['path']; ?>">
-        <?php echo $file['indentation']; ?> <?php echo $this->escape($file['name']); ?> <i class="fa fa-folder-open-o"></i>
+        <?php echo $file['indentation']; ?> <?php echo $this->e($file['name']); ?> <i class="fa fa-folder-open-o"></i>
       </li>
       <?php } ?>
       <?php } ?>
