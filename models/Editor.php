@@ -10,8 +10,8 @@
 namespace gplcart\modules\editor\models;
 
 use gplcart\core\Model;
-use gplcart\core\models\Backup as BackupModel,
-    gplcart\core\models\Language as LanguageModel;
+use gplcart\core\models\Language as LanguageModel;
+use gplcart\modules\backup\models\Backup as ModuleBackupModel;
 
 /**
  * Manages basic behaviors and data related to Theme Editor module
@@ -27,16 +27,16 @@ class Editor extends Model
 
     /**
      * Backup model instance
-     * @var \gplcart\core\models\Backup $backup
+     * @var \gplcart\modules\backup\models\Backup $backup
      */
     protected $backup;
 
     /**
-     * Constructor
      * @param LanguageModel $language
-     * @param BackupModel $backup
+     * @param ModuleBackupModel $backup
      */
-    public function __construct(LanguageModel $language, BackupModel $backup)
+    public function __construct(LanguageModel $language,
+            ModuleBackupModel $backup)
     {
         parent::__construct();
 

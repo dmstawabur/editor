@@ -4,5 +4,8 @@
     "description": "Allows to edit theme template, CSS, JS files rigth in admin area",
     "author": "Iurii Makukh ",
     "core": "1.x",
-    "license": "GPL-3.0+"
+    "license": "GPL-3.0+",
+    "dependencies": {
+        "backup": "1.x"
+    }
 }
