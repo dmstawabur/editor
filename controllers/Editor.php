@@ -163,10 +163,9 @@ class Editor extends BackendController
             foreach ($files as $file) {
 
                 $path = trim(str_replace($this->data_module['directory'], '', $file), '/');
-                $depth = substr_count($path, '/');
+                $depth = substr_count(str_replace('\\', '/', $path), '/'); // WIN compatibility
 
                 $pathinfo = pathinfo($path);
-
                 $directory = is_dir($file);
                 $parent = $directory ? $path : $pathinfo['dirname'];
 
@@ -260,7 +259,7 @@ class Editor extends BackendController
     protected function setMessageEditEditor()
     {
         if ($this->canSaveEditor()) {
-            $message = $this->text('Before saving changes make sure you have a <a href="@url">backup</a> of the current version', array('@url' => $this->url('admin/report/backup')));
+            $message = $this->text('Before saving changes make sure you have a backup of the current version');
             $this->setMessage($message, 'warning');
         }
 
