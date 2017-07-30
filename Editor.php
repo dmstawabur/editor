@@ -63,7 +63,7 @@ class Editor extends Module
         if ($object->path('^admin/tool/editor') && $this->config->isEnabledModule('codemirror')) {
 
             /* @var $module \gplcart\modules\codemirror\Codemirror */
-            $module = $this->config->getModuleInstance('codemirror');
+            $module = $this->getInstance('codemirror');
 
             $module->addLibrary($object);
             $object->setJs('system/modules/editor/js/common.js', array('aggregate' => false));
