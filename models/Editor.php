@@ -58,7 +58,7 @@ class Editor extends Model
             $list[$folder] = $files;
         }
 
-        $this->hook->fire('module.editor.list', $list);
+        $this->hook->attach('module.editor.list', $list);
         return $list;
     }
 
@@ -69,7 +69,7 @@ class Editor extends Model
      */
     public function save($data)
     {
-        $this->hook->fire('module.editor.save.before', $data);
+        $this->hook->attach('module.editor.save.before', $data);
 
         if (empty($data)) {
             return false;
@@ -86,7 +86,7 @@ class Editor extends Model
 
         $result = $this->write($data['content'], $data['path']);
 
-        $this->hook->fire('module.editor.save.after', $data, $result);
+        $this->hook->attach('module.editor.save.after', $data, $result);
         return $result;
     }
 
