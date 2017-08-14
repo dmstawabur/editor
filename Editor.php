@@ -56,17 +56,17 @@ class Editor extends Module
 
     /**
      * Implements hook "construct.controller.backend"
-     * @param \gplcart\core\controllers\backend\Controller $object
+     * @param \gplcart\core\controllers\backend\Controller $controller
      */
-    public function hookConstructControllerBackend(\gplcart\core\controllers\backend\Controller $object)
+    public function hookConstructControllerBackend($controller)
     {
-        if ($object->path('^admin/tool/editor') && $this->config->isEnabledModule('codemirror')) {
+        if ($controller->path('^admin/tool/editor') && $this->config->isEnabledModule('codemirror')) {
 
             /* @var $module \gplcart\modules\codemirror\Codemirror */
-            $module = $this->getInstance('codemirror');
+            $module = $this->getInstance('Codemirror');
 
-            $module->addLibrary($object);
-            $object->setJs('system/modules/editor/js/common.js', array('aggregate' => false));
+            $module->addLibrary($controller);
+            $controller->setJs('system/modules/editor/js/common.js', array('aggregate' => false));
         }
     }
 
