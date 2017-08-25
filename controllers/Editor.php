@@ -44,6 +44,12 @@ class Editor extends BackendController
     protected $data_file;
 
     /**
+     * The current file extension
+     * @var string
+     */
+    protected $data_extension;
+
+    /**
      * @param EditorModuleModel $editor
      * @param ModuleModel $module
      */
@@ -124,7 +130,6 @@ class Editor extends BackendController
     /**
      * Returns an array of module data
      * @param string $module_id
-     * @return array
      */
     protected function setModuleEditor($module_id)
     {
@@ -138,7 +143,7 @@ class Editor extends BackendController
             $this->outputHttpStatus(403);
         }
 
-        return $this->data_module = $module;
+        $this->data_module = $module;
     }
 
     /**
@@ -211,11 +216,6 @@ class Editor extends BackendController
             'text' => $this->text('Modules')
         );
 
-        $breadcrumbs[] = array(
-            'url' => $this->url('admin/tool/editor'),
-            'text' => $this->text('Themes')
-        );
-
         $this->setBreadcrumbs($breadcrumbs);
     }
 
@@ -239,7 +239,6 @@ class Editor extends BackendController
 
         $this->setTitleEditEditor();
         $this->setBreadcrumbEditEditor();
-
         $this->setMessageEditEditor();
 
         $this->setData('module', $this->data_module);
@@ -258,14 +257,12 @@ class Editor extends BackendController
      */
     protected function setMessageEditEditor()
     {
-        if ($this->canSaveEditor()) {
-            $message = $this->text('Before saving changes make sure you have a backup of the current version');
-            $this->setMessage($message, 'warning');
-        }
-
-        if ($this->current_theme['id'] == $this->data_module['id']) {
-            $message = $this->text('You cannot edit the current theme');
-            $this->setMessage($message, 'warning');
+        if ($this->canSaveEditor() && $this->data_extension === 'php') {
+            $this->setMessage($this->text('Be careful! Invalid PHP code can break down all your site!'), 'danger');
+            if (!$this->editor->canValidatePhpCode()) {
+                $message = $this->text('PHP syntax validation is disabled due to your environment settings');
+                $this->setMessage($message, 'warning');
+            }
         }
     }
 
@@ -276,7 +273,7 @@ class Editor extends BackendController
     {
         $settings = array(
             'readonly' => !$this->canSaveEditor(),
-            'file_extension' => pathinfo($this->data_file, PATHINFO_EXTENSION)
+            'file_extension' => $this->data_extension
         );
 
         $this->setJsSettings('editor', $settings);
@@ -304,38 +301,30 @@ class Editor extends BackendController
         $this->setSubmitted('path', $this->data_file);
         $this->setSubmitted('module', $this->data_module);
 
-        $content = $this->getSubmitted('content');
+        $this->validateSyntaxEditor();
 
-        if (!empty($content)) {
-            $this->validateTwigEditor($content);
-        }
         return !$this->hasErrors();
     }
 
     /**
-     * Validates TWIG code
-     * @param string $content
-     * @return boolean
+     * Validate syntax of a submitted file
      */
-    protected function validateTwigEditor($content)
+    protected function validateSyntaxEditor()
     {
-        $info = pathinfo($this->data_file);
+        $code = $this->getSubmitted('content');
 
-        if ($info['extension'] !== 'twig' || !$this->config->isEnabledModule('twig')) {
+        if (empty($code) || $this->data_extension !== 'php') {
             return null;
         }
 
-        /* @var $module \gplcart\modules\twig\Twig */
-        $module = $this->config->getModuleInstance('twig');
-        $twig = $module->getTwigInstance($info['dirname'], $this);
+        $result = $this->editor->validatePhpCode($code);
 
-        try {
-            $twig->parse($twig->tokenize(new \Twig_Source($content, $info['basename'])));
-            return true;
-        } catch (\Twig_Error_Syntax $e) {
-            $this->setError('content', $e->getMessage());
+        if (!isset($result) || $result === true) {
+            return null;
         }
-        return false;
+
+        $error = empty($result) ? $this->text('There is a syntax error in your file') : $result;
+        $this->setError('content', $error);
     }
 
     /**
@@ -353,8 +342,7 @@ class Editor extends BackendController
             $this->redirect("admin/tool/editor/{$submitted['module']['id']}", $message, 'success');
         }
 
-        $message = $this->text('An error occurred');
-        $this->redirect('', $message, 'warning');
+        $this->redirect('', $this->text('An error occurred'), 'warning');
     }
 
     /**
@@ -381,7 +369,7 @@ class Editor extends BackendController
      */
     protected function setTitleEditEditor()
     {
-        $vars = array('%name' => substr($this->data_file, strlen(GC_MODULE_DIR . '/')));
+        $vars = array('%name' => str_replace('\\', '/', gplcart_relative_path($this->data_file)));
         $text = $this->text('Edit file %name', $vars);
         $this->setTitle($text);
     }
@@ -404,6 +392,11 @@ class Editor extends BackendController
         );
 
         $breadcrumbs[] = array(
+            'url' => $this->url('admin/tool/editor'),
+            'text' => $this->text('Themes')
+        );
+
+        $breadcrumbs[] = array(
             'url' => $this->url("admin/tool/editor/{$this->data_module['id']}"),
             'text' => $this->text('Edit theme %name', array('%name' => $this->data_module['name']))
         );
@@ -422,7 +415,6 @@ class Editor extends BackendController
     /**
      * Returns a path to the file to be edited
      * @param string $encoded_filename URL encoded base64 hash
-     * @return string
      */
     protected function setFilePathEditor($encoded_filename)
     {
@@ -433,7 +425,8 @@ class Editor extends BackendController
             $this->outputHttpStatus(404);
         }
 
-        return $this->data_file = $file;
+        $this->data_file = $file;
+        $this->data_extension = pathinfo($file, PATHINFO_EXTENSION);
     }
 
     /**

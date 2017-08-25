@@ -69,10 +69,11 @@ class Editor extends Model
      */
     public function save($data)
     {
-        $this->hook->attach('module.editor.save.before', $data);
+        $result = null;
+        $this->hook->attach('module.editor.save.before', $data, $result);
 
-        if (empty($data)) {
-            return false;
+        if (isset($result)) {
+            return $result;
         }
 
         $has_backup = true;
@@ -98,11 +99,11 @@ class Editor extends Model
      */
     protected function write($content, $file)
     {
-        if (!file_exists($file)) {
-            return false; // Do not create a new file
+        if (file_exists($file)) { // Do not create a new file
+            return file_put_contents($file, $content) !== false;
         }
 
-        return file_put_contents($file, $content) !== false;
+        return false;
     }
 
     /**
@@ -112,9 +113,51 @@ class Editor extends Model
      */
     public function hasBackup(array $module)
     {
-        $conditions = array('module_id' => $module['id']);
-        $existing = $this->backup->getList($conditions);
+        $existing = $this->backup->getList(array('module_id' => $module['id']));
         return !empty($existing);
+    }
+
+    /**
+     * Tries to validate syntax of a PHP file
+     * @param string $file
+     * @return mixed
+     */
+    public function validatePhpFile($file)
+    {
+        if (!$this->canValidatePhpCode()) {
+            return null;
+        }
+
+        $output = shell_exec('php -l ' . escapeshellarg($file));
+
+        $count = 0;
+        $error = preg_replace('/Errors parsing.*$/', '', $output, -1, $count);
+        return $count > 0 ? trim("$error") : true;
+    }
+
+    /**
+     * Whether it's possible to validate a PHP code
+     * @return bool
+     */
+    public function canValidatePhpCode()
+    {
+        return function_exists('shell_exec') && !in_array('shell_exec', explode(',', ini_get('disable_functions')));
+    }
+
+    /**
+     * Tries to validate a PHP code
+     * @param string $code
+     * @return mixed
+     */
+    public function validatePhpCode($code)
+    {
+        $temp = tmpfile();
+        fwrite($temp, $code);
+        $meta_data = stream_get_meta_data($temp);
+
+        $result = $this->validatePhpFile($meta_data['uri']);
+        fclose($temp);
+        return $result;
     }
 
 }
