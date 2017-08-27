@@ -6,7 +6,7 @@ Theme Editor is a [GPL Cart](https://github.com/gplcart/gplcart) module that all
 Features:
 
 - Can edit templates, CSS and JS files
-- Validates TWIG syntax before saving
+- Validates PHP templates before saving (shell_exec() must be allowed)
 - Automatically makes a backup zip
 - Access control
 - Supports [Code Mirror](https://github.com/gplcart/codemirror)
