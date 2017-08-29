@@ -11,7 +11,6 @@ namespace gplcart\modules\editor\models;
 
 use gplcart\core\Model;
 use gplcart\core\models\Language as LanguageModel;
-use gplcart\modules\backup\models\Backup as ModuleBackupModel;
 
 /**
  * Manages basic behaviors and data related to Theme Editor module
@@ -26,21 +25,12 @@ class Editor extends Model
     protected $language;
 
     /**
-     * Backup model instance
-     * @var \gplcart\modules\backup\models\Backup $backup
-     */
-    protected $backup;
-
-    /**
      * @param LanguageModel $language
-     * @param ModuleBackupModel $backup
      */
-    public function __construct(LanguageModel $language,
-            ModuleBackupModel $backup)
+    public function __construct(LanguageModel $language)
     {
         parent::__construct();
 
-        $this->backup = $backup;
         $this->language = $language;
     }
 
@@ -52,7 +42,7 @@ class Editor extends Model
     public function getList(array $module)
     {
         $list = array();
-        foreach (array('templates', 'css', 'js') as $folder) {
+        foreach ($this->getScanFolders() as $folder) {
             $files = gplcart_file_scan_recursive("{$module['directory']}/$folder");
             sort($files);
             $list[$folder] = $files;
@@ -60,6 +50,15 @@ class Editor extends Model
 
         $this->hook->attach('module.editor.list', $list);
         return $list;
+    }
+
+    /**
+     * Returns an array of folder names to scan
+     * @return array
+     */
+    protected function getScanFolders()
+    {
+        return array('templates', 'css', 'js');
     }
 
     /**
@@ -76,19 +75,31 @@ class Editor extends Model
             return $result;
         }
 
-        $has_backup = true;
-        if (!$this->hasBackup($data['module'])) {
-            $has_backup = $this->backup->backup('module', $data['module']);
-        }
-
-        if ($has_backup !== true) {
+        if ($this->backup($data) !== true) {
             return false;
         }
 
         $result = $this->write($data['content'], $data['path']);
-
         $this->hook->attach('module.editor.save.after', $data, $result);
         return $result;
+    }
+
+    /**
+     * Backup a module
+     * @param array $data
+     * @return bool
+     */
+    protected function backup(array $data)
+    {
+        /* @var $backup \gplcart\modules\backup\Backup */
+        $backup = $this->config->getModuleInstance('backup');
+
+        $has_backup = true;
+        if (!$backup->exists($data['module']['id'])) {
+            $has_backup = $backup->backup('module', $data['module']);
+        }
+
+        return $has_backup;
     }
 
     /**
@@ -104,17 +115,6 @@ class Editor extends Model
         }
 
         return false;
-    }
-
-    /**
-     * Whether a module ID has a backup
-     * @param array $module
-     * @return boolean
-     */
-    public function hasBackup(array $module)
-    {
-        $existing = $this->backup->getList(array('module_id' => $module['id']));
-        return !empty($existing);
     }
 
     /**
