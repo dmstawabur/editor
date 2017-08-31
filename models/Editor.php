@@ -91,12 +91,17 @@ class Editor extends Model
      */
     protected function backup(array $data)
     {
-        /* @var $backup \gplcart\modules\backup\Backup */
-        $backup = $this->config->getModuleInstance('backup');
-
         $has_backup = true;
-        if (!$backup->exists($data['module']['id'])) {
-            $has_backup = $backup->backup('module', $data['module']);
+
+        try {
+            /* @var $backup \gplcart\modules\backup\Backup */
+            $backup = $this->config->getModuleInstance('backup');
+            if (!$backup->exists($data['module']['id'])) {
+                $has_backup = $backup->backup('module', $data['module']);
+            }
+        } catch (\Exception $ex) {
+            trigger_error($ex->getMessage());
+            $has_backup = false;
         }
 
         return $has_backup;
