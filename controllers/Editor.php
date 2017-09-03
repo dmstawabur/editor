@@ -133,17 +133,15 @@ class Editor extends BackendController
      */
     protected function setModuleEditor($module_id)
     {
-        $module = $this->module->get($module_id);
+        $this->data_module = $this->module->get($module_id);
 
-        if (empty($module)) {
+        if (empty($this->data_module)) {
             $this->outputHttpStatus(404);
         }
 
-        if ($module['type'] !== 'theme') {
+        if ($this->data_module['type'] !== 'theme') {
             $this->outputHttpStatus(403);
         }
-
-        $this->data_module = $module;
     }
 
     /**
@@ -257,7 +255,10 @@ class Editor extends BackendController
      */
     protected function setMessageEditEditor()
     {
-        if ($this->canSaveEditor() && $this->data_extension === 'php') {
+        if ($this->current_theme['id'] == $this->data_module['id']) {
+            $message = $this->text('You cannot edit the current theme');
+            $this->setMessage($message, 'warning');
+        } else if ($this->canSaveEditor() && $this->data_extension === 'php') {
             $this->setMessage($this->text('Be careful! Invalid PHP code can break down all your site!'), 'danger');
             if (!$this->editor->canValidatePhpCode()) {
                 $message = $this->text('PHP syntax validation is disabled due to your environment settings');
@@ -370,8 +371,7 @@ class Editor extends BackendController
     protected function setTitleEditEditor()
     {
         $vars = array('%name' => str_replace('\\', '/', gplcart_relative_path($this->data_file)));
-        $text = $this->text('Edit file %name', $vars);
-        $this->setTitle($text);
+        $this->setTitle($this->text('Edit file %name', $vars));
     }
 
     /**
@@ -419,14 +419,13 @@ class Editor extends BackendController
     protected function setFilePathEditor($encoded_filename)
     {
         $filepath = gplcart_string_decode($encoded_filename);
-        $file = "{$this->data_module['directory']}/$filepath";
+        $this->data_file = "{$this->data_module['directory']}/$filepath";
 
-        if (!is_file($file) || !is_readable($file)) {
+        if (!is_file($this->data_file) || !is_readable($this->data_file)) {
             $this->outputHttpStatus(404);
         }
 
-        $this->data_file = $file;
-        $this->data_extension = pathinfo($file, PATHINFO_EXTENSION);
+        $this->data_extension = pathinfo($this->data_file, PATHINFO_EXTENSION);
     }
 
     /**

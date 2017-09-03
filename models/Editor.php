@@ -75,7 +75,7 @@ class Editor extends Model
             return $result;
         }
 
-        if ($this->backup($data) !== true) {
+        if (!$this->backup($data)) {
             return false;
         }
 
@@ -97,7 +97,7 @@ class Editor extends Model
             /* @var $backup \gplcart\modules\backup\Backup */
             $backup = $this->config->getModuleInstance('backup');
             if (!$backup->exists($data['module']['id'])) {
-                $has_backup = $backup->backup('module', $data['module']);
+                $has_backup = $backup->backup('module', $data['module']) === true;
             }
         } catch (\Exception $ex) {
             trigger_error($ex->getMessage());
