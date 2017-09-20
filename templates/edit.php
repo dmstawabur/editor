@@ -21,7 +21,7 @@
       <?php echo $this->text('Cancel'); ?>
     </a>
     <?php if ($can_save) { ?>
-    <button class="btn btn-default" name="save" value="1" onclick="return confirm(GplCart.text('Do you want to save the changes? Do you have a backup?'));">
+    <button class="btn btn-default" name="save" value="1" onclick="return confirm(Gplcart.text('Do you want to save the changes? Do you have a backup?'));">
       <i class="fa fa-floppy-o"></i> <?php echo $this->text('Save'); ?>
     </button>
     <?php } ?>

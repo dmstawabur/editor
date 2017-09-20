@@ -1,5 +1,5 @@
-/* global GplCart, jQuery, CodeMirror */
-(function (GplCart, $) {
+/* global Gplcart, jQuery, CodeMirror */
+(function (Gplcart, $) {
 
     "use strict";
 
@@ -7,7 +7,7 @@
      * Setup Code Mirror
      * @returns {undefined}
      */
-    GplCart.onload.setCodemirror = function () {
+    Gplcart.onload.setCodemirror = function () {
 
         if (typeof CodeMirror === 'undefined') {
             return;
@@ -34,11 +34,11 @@
             php: {name: 'htmlmixed'}
         };
 
-        if (GplCart.settings.editor) {
-            if (GplCart.settings.editor.file_extension) {
-                ext = GplCart.settings.editor.file_extension;
+        if (Gplcart.settings.editor) {
+            if (Gplcart.settings.editor.file_extension) {
+                ext = Gplcart.settings.editor.file_extension;
             }
-            if (GplCart.settings.editor.readonly) {
+            if (Gplcart.settings.editor.readonly) {
                 readonly = true;
             }
         }
@@ -49,10 +49,10 @@
             mode: mode,
             lineNumbers: true,
             readOnly: readonly,
-            theme: GplCart.settings.codemirror.theme
+            theme: Gplcart.settings.codemirror.theme
         };
 
         CodeMirror.fromTextArea(textarea, settings);
     };
 
-})(GplCart, jQuery);
+})(Gplcart, jQuery);
