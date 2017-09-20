@@ -6,7 +6,7 @@
  * @license https://www.gnu.org/licenses/gpl.html GNU/GPLv3
  */
 ?>
-<?php echo $this->text('Select a theme to edit:'); ?>
+<?php echo $this->text('Select a theme to edit'); ?>:
 <ul class="list-unstyled">
   <?php foreach ($themes as $module_id => $module) { ?>
   <li>

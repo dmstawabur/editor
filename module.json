@@ -1,7 +1,7 @@
 {
     "name": "Theme editor",
     "version": "1.0.0-dev",
-    "description": "Allows to edit theme template, CSS, JS files rigth in admin area",
+    "description": "Allows to edit theme template, CSS, JS files right in admin area",
     "author": "Iurii Makukh ",
     "core": "1.x",
     "license": "GPL-3.0+",

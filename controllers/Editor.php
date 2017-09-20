@@ -259,11 +259,11 @@ class Editor extends BackendController
             $message = $this->text('You cannot edit the current theme');
             $this->setMessage($message, 'warning');
         } else if ($this->canSaveEditor() && $this->data_extension === 'php') {
-            $this->setMessage($this->text('Be careful! Invalid PHP code can break down all your site!'), 'danger');
             if (!$this->editor->canValidatePhpCode()) {
-                $message = $this->text('PHP syntax validation is disabled due to your environment settings');
+                $message = $this->text('Warning! PHP syntax validation is disabled due to your environment settings. It means that nothing stops you from saving invalid PHP code!');
                 $this->setMessage($message, 'warning');
             }
+            $this->setMessage($this->text('Be careful! Invalid PHP code can break down all your site!'), 'danger');
         }
     }
 
@@ -339,7 +339,7 @@ class Editor extends BackendController
         $result = $this->editor->save($submitted);
 
         if ($result === true) {
-            $message = $this->text('Theme file has been saved');
+            $message = $this->text('File has been saved');
             $this->redirect("admin/tool/editor/{$submitted['module']['id']}", $message, 'success');
         }
 
@@ -371,7 +371,7 @@ class Editor extends BackendController
     protected function setTitleEditEditor()
     {
         $vars = array('%name' => str_replace('\\', '/', gplcart_relative_path($this->data_file)));
-        $this->setTitle($this->text('Edit file %name', $vars));
+        $this->setTitle($this->text('Edit %name', $vars));
     }
 
     /**
