@@ -370,7 +370,7 @@ class Editor extends BackendController
      */
     protected function setTitleEditEditor()
     {
-        $vars = array('%name' => str_replace('\\', '/', gplcart_relative_path($this->data_file)));
+        $vars = array('%name' => str_replace('\\', '/', gplcart_path_relative($this->data_file)));
         $this->setTitle($this->text('Edit %name', $vars));
     }
 
