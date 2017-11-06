@@ -9,14 +9,27 @@
 
 namespace gplcart\modules\editor\models;
 
-use gplcart\core\Model;
+use gplcart\core\Config,
+    gplcart\core\Hook;
 use gplcart\core\models\Language as LanguageModel;
 
 /**
  * Manages basic behaviors and data related to Theme Editor module
  */
-class Editor extends Model
+class Editor
 {
+
+    /**
+     * Hook class instance
+     * @var \gplcart\core\Hook $hook
+     */
+    protected $hook;
+
+    /**
+     * Config class instance
+     * @var \gplcart\core\Config $config
+     */
+    protected $config;
 
     /**
      * Language model instance
@@ -25,12 +38,14 @@ class Editor extends Model
     protected $language;
 
     /**
+     * @param Hook $hook
+     * @param Config $config
      * @param LanguageModel $language
      */
-    public function __construct(LanguageModel $language)
+    public function __construct(Hook $hook, Config $config, LanguageModel $language)
     {
-        parent::__construct();
-
+        $this->hook = $hook;
+        $this->config = $config;
         $this->language = $language;
     }
 
