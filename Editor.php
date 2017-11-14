@@ -61,14 +61,7 @@ class Editor extends Module
      */
     public function hookConstructControllerBackend($controller)
     {
-        if ($controller->path('^admin/tool/editor') && $this->config->isEnabledModule('codemirror')) {
-
-            /* @var $module \gplcart\modules\codemirror\Codemirror */
-            $module = $this->getInstance('Codemirror');
-
-            $module->addLibrary($controller);
-            $controller->setJs('system/modules/editor/js/common.js', array('aggregate' => false));
-        }
+        $this->setModuleAssets($controller);
     }
 
     /**
@@ -80,6 +73,20 @@ class Editor extends Module
         $permissions['editor'] = /* @text */'Theme editor: access';
         $permissions['editor_edit'] = /* @text */'Theme editor: edit file';
         $permissions['editor_content'] = /* @text */'Theme editor: access file content';
+    }
+
+    /**
+     * Sets module specific assets
+     * @param \gplcart\core\controllers\backend\Controller $controller
+     */
+    protected function setModuleAssets($controller)
+    {
+        if ($controller->path('^admin/tool/editor') && $this->config->isEnabledModule('codemirror')) {
+            /* @var $module \gplcart\modules\codemirror\Codemirror */
+            $module = $this->getInstance('Codemirror');
+            $module->addLibrary($controller);
+            $controller->setJs('system/modules/editor/js/common.js', array('aggregate' => false));
+        }
     }
 
 }
