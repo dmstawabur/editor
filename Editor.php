@@ -9,21 +9,26 @@
 
 namespace gplcart\modules\editor;
 
-use gplcart\core\Module,
-    gplcart\core\Config;
+use gplcart\core\Module;
 
 /**
  * Main class for Theme editor module
  */
-class Editor extends Module
+class Editor
 {
 
     /**
-     * @param Config $config
+     * Module class instance
+     * @var \gplcart\core\Module $module
      */
-    public function __construct(Config $config)
+    protected $module;
+
+    /**
+     * @param Module $module
+     */
+    public function __construct(Module $module)
     {
-        parent::__construct($config);
+        $this->module = $module;
     }
 
     /**
@@ -81,12 +86,19 @@ class Editor extends Module
      */
     protected function setModuleAssets($controller)
     {
-        if ($controller->path('^admin/tool/editor') && $this->config->isEnabledModule('codemirror')) {
-            /* @var $module \gplcart\modules\codemirror\Codemirror */
-            $module = $this->getInstance('Codemirror');
-            $module->addLibrary($controller);
+        if ($controller->path('^admin/tool/editor') && $this->module->isEnabled('codemirror')) {
+            $this->getCodemirrorModule()->addLibrary($controller);
             $controller->setJs('system/modules/editor/js/common.js', array('aggregate' => false));
         }
+    }
+
+    /**
+     * Returns CodeMirror module instance
+     * @return \gplcart\modules\codemirror\Codemirror
+     */
+    protected function getCodemirrorModule()
+    {
+        return $this->module->getInstance('codemirror');
     }
 
 }

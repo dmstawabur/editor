@@ -9,7 +9,7 @@
 
 namespace gplcart\modules\editor\models;
 
-use gplcart\core\Config,
+use gplcart\core\Module,
     gplcart\core\Hook;
 use gplcart\core\models\Language as LanguageModel;
 
@@ -26,10 +26,10 @@ class Editor
     protected $hook;
 
     /**
-     * Config class instance
-     * @var \gplcart\core\Config $config
+     * Module class instance
+     * @var \gplcart\core\Module $module
      */
-    protected $config;
+    protected $module;
 
     /**
      * Language model instance
@@ -39,13 +39,13 @@ class Editor
 
     /**
      * @param Hook $hook
-     * @param Config $config
+     * @param Module $module
      * @param LanguageModel $language
      */
-    public function __construct(Hook $hook, Config $config, LanguageModel $language)
+    public function __construct(Hook $hook, Module $module, LanguageModel $language)
     {
         $this->hook = $hook;
-        $this->config = $config;
+        $this->module = $module;
         $this->language = $language;
     }
 
@@ -110,7 +110,7 @@ class Editor
 
         try {
             /* @var $backup \gplcart\modules\backup\Backup */
-            $backup = $this->config->getModuleInstance('backup');
+            $backup = $this->module->getInstance('backup');
             if (!$backup->exists($data['module']['id'])) {
                 $has_backup = $backup->backup('module', $data['module']) === true;
             }

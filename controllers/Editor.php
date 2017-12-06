@@ -9,8 +9,7 @@
 
 namespace gplcart\modules\editor\controllers;
 
-use gplcart\core\models\Module as ModuleModel,
-    gplcart\modules\editor\models\Editor as EditorModuleModel;
+use gplcart\modules\editor\models\Editor as EditorModuleModel;
 use gplcart\core\controllers\backend\Controller as BackendController;
 
 /**
@@ -24,12 +23,6 @@ class Editor extends BackendController
      * @var \gplcart\modules\editor\models\Editor $editor
      */
     protected $editor;
-
-    /**
-     * Module model instance
-     * @var \gplcart\core\models\Module $module
-     */
-    protected $module;
 
     /**
      * The current module
@@ -51,14 +44,12 @@ class Editor extends BackendController
 
     /**
      * @param EditorModuleModel $editor
-     * @param ModuleModel $module
      */
-    public function __construct(EditorModuleModel $editor, ModuleModel $module)
+    public function __construct(EditorModuleModel $editor)
     {
         parent::__construct();
 
         $this->editor = $editor;
-        $this->module = $module;
     }
 
     /**
