@@ -9,12 +9,12 @@
 
 namespace gplcart\modules\editor;
 
-use gplcart\core\Module;
+use gplcart\core\Module as CoreModule;
 
 /**
  * Main class for Theme editor module
  */
-class Editor
+class Module
 {
 
     /**
@@ -24,9 +24,9 @@ class Editor
     protected $module;
 
     /**
-     * @param Module $module
+     * @param CoreModule $module
      */
-    public function __construct(Module $module)
+    public function __construct(CoreModule $module)
     {
         $this->module = $module;
     }
