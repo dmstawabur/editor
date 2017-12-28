@@ -109,7 +109,7 @@ class Editor
         $has_backup = true;
 
         try {
-            /* @var $backup \gplcart\modules\backup\Backup */
+            /* @var $backup \gplcart\modules\backup\Module */
             $backup = $this->module->getInstance('backup');
             if (!$backup->exists($data['module']['id'])) {
                 $has_backup = $backup->backup('module', $data['module']) === true;

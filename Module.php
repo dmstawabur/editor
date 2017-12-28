@@ -94,7 +94,7 @@ class Module
 
     /**
      * Returns CodeMirror module instance
-     * @return \gplcart\modules\codemirror\Codemirror
+     * @return \gplcart\modules\codemirror\Module
      */
     protected function getCodemirrorModule()
     {
