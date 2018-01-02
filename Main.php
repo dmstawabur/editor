@@ -9,12 +9,12 @@
 
 namespace gplcart\modules\editor;
 
-use gplcart\core\Module as CoreModule;
+use gplcart\core\Module;
 
 /**
  * Main class for Theme editor module
  */
-class Module
+class Main
 {
 
     /**
@@ -24,9 +24,9 @@ class Module
     protected $module;
 
     /**
-     * @param CoreModule $module
+     * @param Module $module
      */
-    public function __construct(CoreModule $module)
+    public function __construct(Module $module)
     {
         $this->module = $module;
     }
@@ -94,7 +94,7 @@ class Module
 
     /**
      * Returns CodeMirror module instance
-     * @return \gplcart\modules\codemirror\Module
+     * @return \gplcart\modules\codemirror\Main
      */
     protected function getCodemirrorModule()
     {
