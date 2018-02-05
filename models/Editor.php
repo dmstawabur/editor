@@ -9,6 +9,7 @@
 
 namespace gplcart\modules\editor\models;
 
+use Exception;
 use gplcart\core\Module,
     gplcart\core\Hook;
 use gplcart\core\models\Language as LanguageModel;
@@ -109,12 +110,15 @@ class Editor
         $has_backup = true;
 
         try {
+
             /* @var $backup \gplcart\modules\backup\Main */
             $backup = $this->module->getInstance('backup');
+
             if (!$backup->exists($data['module']['id'])) {
                 $has_backup = $backup->backup('module', $data['module']) === true;
             }
-        } catch (\Exception $ex) {
+
+        } catch (Exception $ex) {
             trigger_error($ex->getMessage());
             $has_backup = false;
         }
