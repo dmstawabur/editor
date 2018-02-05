@@ -39,7 +39,9 @@ class Main
     {
         $routes['admin/tool/editor'] = array(
             'access' => 'editor',
-            'menu' => array('admin' => /* @text */'Theme editor'),
+            'menu' => array(
+                'admin' => 'Theme editor' // @text
+            ),
             'handlers' => array(
                 'controller' => array('gplcart\\modules\\editor\\controllers\\Editor', 'themeEditor')
             )
@@ -75,9 +77,9 @@ class Main
      */
     public function hookUserRolePermissions(array &$permissions)
     {
-        $permissions['editor'] = /* @text */'Theme editor: access';
-        $permissions['editor_edit'] = /* @text */'Theme editor: edit file';
-        $permissions['editor_content'] = /* @text */'Theme editor: access file content';
+        $permissions['editor'] = 'Theme editor: access'; // @text
+        $permissions['editor_edit'] = 'Theme editor: edit file'; // @text
+        $permissions['editor_content'] = 'Theme editor: access file content'; // @text
     }
 
     /**
@@ -98,7 +100,9 @@ class Main
      */
     protected function getCodemirrorModule()
     {
-        return $this->module->getInstance('codemirror');
+        /** @var \gplcart\modules\codemirror\Main $instance */
+        $instance = $this->module->getInstance('codemirror');
+        return $instance;
     }
 
 }
