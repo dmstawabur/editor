@@ -151,6 +151,7 @@ class Editor extends Controller
     protected function prepareFilesEditor(array $data)
     {
         $prepared = array();
+
         foreach ($data as $folder => $files) {
             foreach ($files as $file) {
 
