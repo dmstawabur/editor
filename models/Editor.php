@@ -10,9 +10,8 @@
 namespace gplcart\modules\editor\models;
 
 use Exception;
-use gplcart\core\Module,
-    gplcart\core\Hook;
-use gplcart\core\models\Language as LanguageModel;
+use gplcart\core\Hook;
+use gplcart\core\Module;
 
 /**
  * Manages basic behaviors and data related to Theme Editor module
@@ -33,21 +32,13 @@ class Editor
     protected $module;
 
     /**
-     * Language model instance
-     * @var \gplcart\core\models\Language $language
-     */
-    protected $language;
-
-    /**
      * @param Hook $hook
      * @param Module $module
-     * @param LanguageModel $language
      */
-    public function __construct(Hook $hook, Module $module, LanguageModel $language)
+    public function __construct(Hook $hook, Module $module)
     {
         $this->hook = $hook;
         $this->module = $module;
-        $this->language = $language;
     }
 
     /**
@@ -58,6 +49,7 @@ class Editor
     public function getList(array $module)
     {
         $list = array();
+
         foreach ($this->getScanFolders() as $folder) {
             $files = gplcart_file_scan_recursive("{$module['directory']}/$folder");
             sort($files);

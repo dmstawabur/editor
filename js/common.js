@@ -5,7 +5,6 @@
 
     /**
      * Setup Code Mirror
-     * @returns {undefined}
      */
     Gplcart.onload.setCodemirror = function () {
 
@@ -14,12 +13,12 @@
         }
 
         var textarea,
-                map,
-                ext,
-                mode,
-                settings,
-                readonly = false,
-                element = $('*[data-codemirror="true"]');
+            map,
+            ext,
+            mode,
+            settings,
+            readonly = false,
+            element = $('*[data-codemirror="true"]');
 
         textarea = element.get(0);
 
@@ -35,9 +34,11 @@
         };
 
         if (Gplcart.settings.editor) {
+
             if (Gplcart.settings.editor.file_extension) {
                 ext = Gplcart.settings.editor.file_extension;
             }
+
             if (Gplcart.settings.editor.readonly) {
                 readonly = true;
             }

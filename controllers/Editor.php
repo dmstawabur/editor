@@ -9,13 +9,13 @@
 
 namespace gplcart\modules\editor\controllers;
 
-use gplcart\modules\editor\models\Editor as EditorModuleModel;
-use gplcart\core\controllers\backend\Controller as BackendController;
+use gplcart\core\controllers\backend\Controller;
+use gplcart\modules\editor\models\Editor as EditorModel;
 
 /**
  * Handles incoming requests and outputs data related to Theme editor module
  */
-class Editor extends BackendController
+class Editor extends Controller
 {
 
     /**
@@ -43,9 +43,9 @@ class Editor extends BackendController
     protected $data_extension;
 
     /**
-     * @param EditorModuleModel $editor
+     * @param EditorModel $editor
      */
-    public function __construct(EditorModuleModel $editor)
+    public function __construct(EditorModel $editor)
     {
         parent::__construct();
 
@@ -59,9 +59,7 @@ class Editor extends BackendController
     {
         $this->setTitleThemeEditor();
         $this->setBreadcrumbThemeEditor();
-
         $this->setData('themes', $this->module->getByType('theme'));
-
         $this->outputThemeEditor();
     }
 
@@ -102,13 +100,13 @@ class Editor extends BackendController
     }
 
     /**
+     * Route callback
      * Displays the module file overview page
      * @param integer $module_id
      */
     public function listEditor($module_id)
     {
         $this->setModuleEditor($module_id);
-
         $this->setTitleListEditor();
         $this->setBreadcrumbListEditor();
 
@@ -217,6 +215,7 @@ class Editor extends BackendController
     }
 
     /**
+     * Route callback
      * Displays the file edit page
      * @param string $module_id
      * @param string $file_id
@@ -225,18 +224,16 @@ class Editor extends BackendController
     {
         $this->setModuleEditor($module_id);
         $this->setFilePathEditor($file_id);
-
         $this->setTitleEditEditor();
         $this->setBreadcrumbEditEditor();
         $this->setMessageEditEditor();
 
         $this->setData('module', $this->data_module);
         $this->setData('can_save', $this->canSaveEditor());
-        $this->setData('lines', $this->getFileTotalLinesEditor());
-        $this->setData('editor.content', $this->getFileContentEditor());
+        $this->setData('lines', count(file($this->data_file)));
+        $this->setData('editor.content', file_get_contents($this->data_file));
 
         $this->submitEditor();
-
         $this->setJsSettingsEditor();
         $this->outputEditEditor();
     }
@@ -342,8 +339,7 @@ class Editor extends BackendController
      */
     protected function canSaveEditor()
     {
-        return $this->access('editor_edit')//
-                && $this->current_theme['id'] != $this->data_module['id'];
+        return $this->access('editor_edit') && $this->current_theme['id'] != $this->data_module['id'];
     }
 
     /**
@@ -417,24 +413,6 @@ class Editor extends BackendController
         }
 
         $this->data_extension = pathinfo($this->data_file, PATHINFO_EXTENSION);
-    }
-
-    /**
-     * Returns a content of the file
-     * @return string
-     */
-    protected function getFileContentEditor()
-    {
-        return file_get_contents($this->data_file);
-    }
-
-    /**
-     * Returns the total number of lines in the file
-     * @return integer
-     */
-    protected function getFileTotalLinesEditor()
-    {
-        return count(file($this->data_file));
     }
 
 }
