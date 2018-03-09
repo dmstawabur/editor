@@ -90,7 +90,7 @@ class Main
     {
         if ($controller->path('^admin/tool/editor') && $this->module->isEnabled('codemirror')) {
             $this->getCodemirrorModule()->addLibrary($controller);
-            $controller->setJs('system/modules/editor/js/common.js', array('aggregate' => false));
+            $controller->setJs('system/modules/editor/js/common.js');
         }
     }
 
